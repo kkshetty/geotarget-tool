@@ -1,0 +1,318 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+
+<meta charset="UTF-8" name="viewport"
+	content="width=device-width, initial-scale=1.0">
+
+<title>Geo Targeting Tool Beta</title>
+
+<style type="text/css">
+html {
+	height: 100%
+}
+
+body {
+	height: 100%;
+	margin: 0;
+	padding: 0
+}
+
+#googleMap img {
+	max-width: none;
+}
+
+.loadinggif 
+{
+   background:
+     url('./images/spinner1.gif')
+     no-repeat
+     right
+
+}
+</style>
+
+
+<script type="text/javascript" src="./js/jquery-2.0.3.js"></script>
+
+<script type="text/javascript" src="./js/jquery.slimscroll.js"></script>
+
+<script type="text/javascript"
+	src="https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyC8Q5Bym881JnNSYeVfTzVRM47jDbLeAdY&sensor=false">
+	
+</script>
+
+<script src="./js/bootstrap.js" type="text/javascript"></script>
+
+
+<script type="text/javascript">
+var map = null;
+
+var newHTML = "";
+
+var markers = [];
+
+var searchRunning = true;
+
+function selectAllResults() {
+	
+	// This function selects all results in the results table
+	
+	var placeCheckBoxes = document.getElementsByName("places[]");
+	
+	for( var i = 0 ; i < placeCheckBoxes.length ; i++ )
+		placeCheckBoxes[i].checked = true;
+	
+}
+
+function deleteMarkers() {
+
+	for(var k = 0 ; k < markers.length ; k++)
+		markers[k].setMap(null);
+	
+	markers = [];
+
+}
+
+function makeReady() {
+	
+	var mapOptions = {
+		center : new google.maps.LatLng(23.2500, 77.4167),
+		zoom : 5,
+		mapTypeId : google.maps.MapTypeId.ROADMAP
+	};
+	map = new google.maps.Map(document.getElementById("googleMap"),
+			mapOptions);
+
+}
+
+function sendQuery(theQuery) {
+
+	var finalQuery = theQuery.replace(/[ ]/g, "+");
+
+	var request = {
+
+		query : finalQuery
+
+	};
+
+	service = new google.maps.places.PlacesService(map);
+	
+	document.getElementById("searchButton").disabled="disabled";
+	
+	document.getElementById("resultsPane").innerHTML = "<h4>Loading...<h4>";
+	
+	newHTML = "<form enctype=\"multipart\/form-data\" id=\"resultsForm\" action=\"\" method=\"POST\" onsubmit=\"return false\">";
+	
+	newHTML += "<input type=\"hidden\" name=\"MAX_FILE_SIZE\" value=\"1000000\" />";
+	
+	newHTML += "<input type=\"hidden\" name=\"radius\" id=\"radius\" value=\"\" />";
+	
+	newHTML += "<input type=\"hidden\" name=\"queryString\" id=\"queryString\" value=\"\" />";
+	
+	newHTML += "<caption style=\"text-align: left; font-size: 110%; margin: 20px 0px 20px 0px;\"> <b><u>Search Results</b></u>";
+	
+	newHTML += "&nbsp;&nbsp;&nbsp; | &nbsp;Select desired places and generate CSV file&nbsp;&nbsp;-->&nbsp;<button class=\"btn\" id=\"csvGenButton\" onclick=\"generateCsv()\" />Generate CSV File</button><div id=\"csvFile\"></div>";
+	
+	newHTML += "<img id=\"spinner2\" src=\".\/images\/spinner2.gif\" alt=\"Generating..\" style=\"visibility: hidden\" /></caption>";
+	
+	newHTML += "<br /><button class=\"btn btn-info\" style=\" margin:20px 5px 5px 5px; \" onclick=\"selectAllResults()\"> Select All </button>"; 
+	
+	newHTML += "&nbsp;<button class=\"btn btn-info\" type=\"reset\" style=\"margin:20px 0px 5px 0px;\"> Unselect All</button>";
+	
+	newHTML += "<div id=\"results\" style=\"border: none;\"><table border=\"1\" cellpadding=\"5\" cellspacing=\"5\">";
+	
+	newHTML += "<tr><th>Select</th><th>Name</th><th>Latitude/Longitude</th><th>Address</th><th>Icon</th><th>Rating</th><th>Types</th></tr>";
+		
+	service.textSearch(request, responseCallback);
+
+}
+
+function responseCallback(results, status, pagination) {
+	
+	$('#query').addClass('loadinggif');
+	
+	if(searchRunning == false)
+		deleteMarkers();
+	
+	if (status != google.maps.places.PlacesServiceStatus.OK) {
+		alert(status);
+		return;
+	}
+
+	for (var i = 0, result; result = results[i]; i++) {
+
+		var marker = new google.maps.Marker({
+			map : map,
+			position : result.geometry.location
+		});
+
+		markers.push(marker);
+		
+	/*	newHTML += "--<br /><p>--Name: " + result.name
+				+ "<br />Formatted Address: " + result.formatted_address
+				+ "<br />LatLong: " + result.geometry.location
+				+ "<br />Icon: <img src=\""+result.icon+"\" alt=\"Icon\"  height=\"30\" width=\"30\"/>"
+				+ "<br /> Rating: "+result.rating
+				+ "<br /> Types: "+result.types
+				+ "<br /></p><br /><br /><br /><br />";
+	*/
+	
+	
+		var rating = "";
+	
+		if(typeof result.rating != "undefined")
+			rating = result.rating;
+		else
+			rating = "N.A";
+		
+		newHTML += "<tr><td><input type=\"checkbox\" name=\"places[]\" value=\""+result.name+"#"+result.geometry.location.lat()+"&"+result.geometry.location.lng()+"\">"
+		+"</td><td>"+result.name
+		+"</td><td>"+result.geometry.location
+		+"</td><td>"+result.formatted_address
+		+"</td><td><img src=\""+result.icon+"\" alt=\"Icon\"  height=\"30\" width=\"30\"/>"
+		+"</td><td>"+rating
+		+"</td><td>"+String(result.types).toUpperCase() + "</td></tr>";
+		         
+	
+	
+	}
+
+	if (pagination.hasNextPage) {
+		searchRunning = true;
+		setTimeout(pagination.nextPage(), 2500);
+	}
+
+	else {
+		searchRunning = false;
+		newHTML += "</table></div></form>";
+		document.getElementById("resultsPane").innerHTML = newHTML;
+		setTimeout(function() {
+			newHTML = "";
+		}, 500);
+		
+		setTimeout(function() {
+			
+			$('#results').slimScroll({
+		        position: 'right',
+				height: '350px',
+				size: '10px',
+				railVisible: true,
+				alwaysVisible: true
+		    });
+			
+		} , 1000);
+		
+		document.getElementById("searchButton").disabled="";
+
+		$("#query").removeClass("loadinggif");
+	}
+
+}
+
+
+function generateCsv() {
+	
+	// Before sending the form, see if any checkboxes have been checked!
+	
+	var placesArray = document.getElementsByName("places[]");
+
+	var hasBeenChecked = false;
+
+	for (var i = 0; i < placesArray.length; i++) {
+			
+			if(placesArray[i].checked === true) {
+				hasBeenChecked = true;
+				break;
+			}
+	};
+
+	if(!hasBeenChecked) {
+		alert("You did not select anything!!");
+		return false;
+	}
+
+	var radius = "";
+	
+	while(radius === "") {
+		
+		radius = prompt("Enter the desired radius(in MILES) ");
+		
+		if(radius === "") {
+			alert("Please anter a radius!");
+			continue;
+		
+	}
+	}
+	
+	document.getElementById("radius").value = radius;
+	
+	document.getElementById("queryString").value = document.getElementById("query").value;
+
+	var fd = new FormData(document.forms.namedItem("resultsForm"));
+	var xr = new XMLHttpRequest();
+
+	xr.onreadystatechange = function() {
+
+	if( xr.readyState == 4 && xr.status == 200) {
+
+			setTimeout(function() {
+
+				document.getElementById("csvFile").innerHTML = xr.responseText;
+				document.getElementById("spinner2").style.visibility = "hidden";
+				return;
+			}, 2000);
+		}
+
+	}
+
+	xr.open("POST","csvGen.php",true);
+	document.getElementById("csvFile").innerHTML = "Generating File...";
+	document.getElementById("spinner2").style.visibility = "visible";
+	xr.send(fd);
+}
+
+</script>
+
+<link rel="stylesheet" type="text/css" href="./css/bootstrap.css" />
+<link rel="stylesheet" type="text/css"
+	href="./css/bootstrap-responsive.css" />
+<link rel="stylesheet" type="text/css" href="./css/bootstrap-extra.css" />
+
+</head>
+
+<body onload="makeReady()">
+
+	<div class="container-fluid">
+
+		<div class="row-fluid">
+
+			<div class="span12" id="content">
+					
+				   <h3>Enter your query </h3>
+				  	<form action="" method="POST" onsubmit="return false;">
+				    <input id="query" style="width: 60%; height: 40px; font-size: 150%;"
+					name="query" type="text" placeholder="What are you looking for?" /> 
+					<p>
+					<input id="searchButton" class="btn btn-success" type="submit" value="Send Query"
+					onclick="sendQuery(query.value)" />
+					
+					<img src="./images/powered-by-google-on-white.png" alt="Powered by Google"  style="height: 20px; "/>
+					</p>
+					</form>
+			</div>
+			<div class="span12" id="resultsPane" style="margin-top: 20px; margin-left: 5px;"></div>
+
+
+			<div id="googleMap" style=""></div>
+
+
+
+		</div>
+
+	</div>
+
+</body>
+
+
+</html>

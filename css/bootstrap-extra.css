@@ -1,0 +1,145 @@
+/* Custom fonts
+-------------------------------------------------- */
+
+@font-face {
+  font-family: CianOT;
+  src: url('ClanOT-Medium.ttf');
+}
+
+/* Navigation toolbar
+-------------------------------------------------- */
+
+/* navigation bar's main sections */
+
+.navbar-fixed-top               { position: static; }
+.navbar .navbar-inner           { height: 80px; background-color: #003A63; text-shadow: none; background-image: none; filter: none; -webkit-box-shadow: none; -moz-box-shadow: none; box-shadow: none;}
+.navbar .brand                  { margin-top: 10px; }
+
+
+.navbar .nav > li.dropdown > a  { color: #FFFFFF; font-size: 12px; }
+.navbar .nav li.dropdown > .dropdown-toggle .caret {  border-bottom-color: #FFFFFF; border-top-color: #FFFFFF; margin-left: 0; }
+
+div.nav-collapse    { margin-top: 22px;}
+.navbar .nav        { margin-left: 20px; margin-right: 20px; }
+
+#sections > li > a {  float: none;
+										  color: #D0DEE7;
+										  background-color: #125889;
+										  text-transform: uppercase;
+										  text-shadow: none;
+										  border-top-left-radius: 3px;
+										  border-top-right-radius: 3px;
+										  padding-bottom: 25px;
+										  margin-right: 3px; 
+										  -webkit-box-shadow: none; -moz-box-shadow: none; box-shadow: none;}
+
+#sections > li > a:focus,
+#sections > li > a:hover        { color: #FFFFFF;  background-color: #125889; }
+
+#sections > .active > a,
+#sections > .active > a:hover,
+#sections > .active > a:focus   { padding-bottom: 28px; }
+
+#sections > .active > a,
+#sections > .active > a:hover,
+#sections > .active > a:focus,
+.service-row > div                    { color: #FFFFFF;  background-color: #0093D0; }
+
+/* user's menu */
+.navbar .nav                            { padding-right: 0; margin-right: 0; }
+.navbar .nav.pull-right > li > a        { padding-right: 0; margin-right: 0; text-shadow: none; }
+.navbar .dropdown-menu .nav-header      { padding-right: 20px; padding-left: 20px; margin-top: 9px }
+.navbar .user-separator                 { padding: 0 14px 0; }
+
+/* ICE version and date selection bar
+-------------------------------------------------- */
+.service-row > div      { line-height: 80px; height: 80px; }
+#serviceform            { margin: 0; }
+#serviceform > *        { margin-left: 3px; margin-right: 3px; }
+#serviceform > span > a { color: #D0DEE7; text-decoration: underline; margin: 0 5px; }
+#serviceform > span > a:hover { color: #FFFFFF;}
+
+/* full width background */
+#serviceform            { position: relative; background-color: #0093D0; }
+#serviceform:before, #serviceform:after 
+                        { content: "";  position: absolute;  background-color: #0093D0; top: 0; bottom: 0; width: 9999px; } 
+#serviceform:before     { right: 100%; }
+#serviceform:after      { left: 100%; }
+
+/* Body and subcomponents
+-------------------------------------------------- */
+body          { padding-bottom: 40px; font-family: Arial, sans-serif}
+
+
+/* Nav */
+#sidebar-nav                            { margin-top: -6px; }
+#sidebar-nav li                         { margin-bottom: 10px; margin-top: 10px; font-weight: bold; font-size: 12px; color: #0079c2; text-shadow: none; }
+#sidebar-nav li a                       { padding-top: 5px; padding-bottom: 5px; }
+#sidebar-nav li a:hover                 { background-color: #ececec; color: #0079c2; text-shadow: none;}
+#sidebar-nav li.active a                { color: #333333; background-color: #ececec; text-shadow: none; }
+#sidebar-nav li.active a:hover          { text-shadow: none;}
+
+#sidebar-nav li p                       { display: inline; margin-left: 10px;}
+
+#sidebar-nav li img.icons               { background: url(/public/images/icons-nav.png) no-repeat; height: 22px; width: 22px; margin-left: -15px; }
+#sidebar-nav li img.lifemap             { background-position: -10px -10px; }
+#sidebar-nav li.active img.lifemap      { background-position: -10px -40px; }
+#sidebar-nav li img.timeline            { background-position: -10px -70px; }
+#sidebar-nav li.active img.timeline     { background-position: -10px -101px; }
+
+
+h1            { font-family: CianOT, Trebuchet MS, sans-serif; font-size: 30px; margin-top: 0; padding-bottom: 12px; margin-bottom: 20px; border-bottom: 1px solid #D1D1D1; }
+h1 a small    { font-size: 12px; margin-left: 10px; font-family: Helvetica, Arial, sans-serif;}
+div.expanding { display:none; }
+.content-area { margin-top: 30px; }
+h2            { font-family: CianOT, Trebuchet MS, sans-serif; font-size: 16px; line-height: 1em; margin-bottom: 10px; margin-top: 20px;}
+
+
+div.graphtool {width: 439px; margin: 0 auto; text-align: right; float: right; }
+#slider       { display: inline-block; margin: 0em 0.7em; }
+div.graph     { margin: 0 0 10px 0; }
+
+/* Stats table */
+
+table.stats                             { border: 1px solid #d6d6d6; }
+table.stats thead                       { font-weight: bold; font-size: 11px; color: #333333; background-color: #c3e5f5;}
+table.stats tbody tr:nth-child(2n+2) td { background-color: #f1f1f1; }
+table.stats tr th:first-child,
+table.stats tr td:first-child           { border-right: 1px solid #d6d6d6; }
+
+/* Lifemap controls */
+
+#lifemap-toggler {
+	position: absolute; top: 10px; right: 10px;
+	/* width: 80px; height: 60px; */
+	/* background-color: white; border: 1px solid #aaa; */ 
+  -moz-box-shadow:    3px 3px 1px 2px #eee;
+  -webkit-box-shadow: 3px 3px 1px 2px #eee;
+  box-shadow:         3px 3px 1px 2px #eee;
+  z-index: 9999; }
+
+/* google map fix */
+
+#googlemap img { max-width: none;}
+
+/* Forms
+-------------------------------------------------- */
+form { margin: 20px 0;}
+
+ul.permissions { list-style-type: none; }
+ul.permissions li .btn { margin-top: 1em }
+
+
+/* Footer
+-------------------------------------------------- */
+
+footer                    { padding: 15px 0; margin-top: 30px; border-top: 1px solid #999999; background-color: #d3d3d3; }
+footer ul                 { margin-left: 0; font-size: 11px; }
+footer ul li              { float: left; list-style: none; padding: 0 10px; border-right: 1px solid #999999; text-transform: uppercase; }
+footer ul li:first-child  { padding-left: 0; }
+footer ul li:last-child   { border-right: 0; text-transform: none; }
+footer ul li a,
+footer ul li a:hover      { color: #666666; }
+
+ 
+
